@@ -1404,17 +1404,17 @@ config.properties — full schema, with every section commented:
   vhost=your-wso2-host
 
   # --- Project settings (used by split, create-apis, create-product) ---
-  projectDir=/path/to/KECBSRESTService__1.0
+  projectDir=/path/to/YourProjectName__1.0
   outDir=/path/to/output
   splitDir=/path/to/output/split-by-endpoint
-  projectName=KECBSRESTService
+  projectName=YourProjectName
   backendsFile=backends.properties
   apiVersion=1.0
   mockBaseUrl=http://localhost:8290/mock/cbs
 
   # --- API Product settings (used by create-product) ---
-  productName=KECBSRESTService
-  productContext=/KECBSRESTService
+  productName=YourProjectName
+  productContext=/YourProjectName
   productVersion=1.0
 
   # --- Added automatically after the first run — leave these alone ---
