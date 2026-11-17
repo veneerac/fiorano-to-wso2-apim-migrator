@@ -1,0 +1,20 @@
+# backends.properties — created and updated by the tool itself; holds no
+# secrets, just names/ids/URLs, so it's safe to share while backend
+# addresses trickle in. The entries below are illustrative samples only,
+# showing the shape create-apis writes after a real run — replace with
+# your own project's values (or just delete this file and let the tool
+# regenerate it from scratch).
+
+api.CustomerAccountLookup.name=YourProjectName-CustomerAccountLookup
+api.CustomerAccountLookup.context=/YourProjectName/customeraccountlookup
+api.CustomerAccountLookup.id=3f1a9c2e-7b4d-4e6a-9c1f-8a2d5e6b7c90
+api.CustomerAccountLookup.backend=https://your-real-backend.example.com/accounts/lookup
+
+api.PaymentInitiation.name=YourProjectName-PaymentInitiation
+api.PaymentInitiation.context=/YourProjectName/paymentinitiation
+api.PaymentInitiation.id=7d4e2b1a-9f3c-4a5d-8e6b-1c2d3e4f5a6b
+api.PaymentInitiation.backend=
+
+product.name=YourProjectName
+product.context=/YourProjectName
+product.id=a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
