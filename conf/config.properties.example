@@ -1,22 +1,22 @@
 # --- Server connection (required) ---
-host=
-adminUser=
-adminPassword=
+host=your-wso2-host
+adminUser=admin
+adminPassword=yourpassword
 environment=Default
-vhost=
+vhost=your-wso2-host
 
 # --- Project settings (used by split, create-apis, create-product) ---
-projectDir=
-outDir=
-splitDir=
-projectName=
+projectDir=/path/to/YourProjectName__1.0
+outDir=/path/to/output
+splitDir=/path/to/output/split-by-endpoint
+projectName=YourProjectName
 backendsFile=backends.properties
 apiVersion=1.0
-mockBaseUrl=
+mockBaseUrl=http://localhost:8290/mock/yourprojectname
 
 # --- API Product settings (used by create-product) ---
-productName=
-productContext=
+productName=YourProjectName
+productContext=/YourProjectName
 productVersion=1.0
 
 # --- Added automatically after the first run — leave these alone ---
