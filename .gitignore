@@ -1,0 +1,8 @@
+# runtime files generated/filled in per customer — never commit real credentials or ids
+conf/config.properties
+conf/backends.properties
+logs/
+*.log
+
+# OS cruft
+.DS_Store
