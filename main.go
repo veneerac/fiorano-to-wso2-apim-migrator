@@ -660,7 +660,7 @@ func cmdSplit(args []string) error {
 	for _, row := range summaryRows {
 		status := "present"
 		if !row.present {
-			status = "MISSING - get from I&M"
+			status = "MISSING - get real backend address from the customer's integration team"
 		}
 		fmt.Fprintf(outW, "%-45s %-30s %5d  %s\n", row.apiName, row.endpointKey, row.count, status)
 	}
