@@ -4,6 +4,9 @@ adminUser=admin
 adminPassword=yourpassword
 environment=Default
 vhost=your-wso2-host
+# port=9443 is the default if omitted; only set it if your APIM server's HTTPS
+# port is offset (e.g. deployment.toml [server] offset = 1 -> port=9444)
+port=9443
 
 # --- Project settings (used by split, create-apis, create-product) ---
 projectDir=/path/to/YourProjectName__1.0

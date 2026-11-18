@@ -703,17 +703,21 @@ func cmdSplit(args []string) error {
 
 type apimClient struct {
 	host       string
+	port       string
 	httpClient *http.Client
 	token      string
 }
 
-func newAPIMClient(host string) *apimClient {
+func newAPIMClient(host, port string) *apimClient {
+	if port == "" {
+		port = "9443"
+	}
 	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
-	return &apimClient{host: host, httpClient: &http.Client{Transport: tr, Timeout: 60 * time.Second}}
+	return &apimClient{host: host, port: port, httpClient: &http.Client{Transport: tr, Timeout: 60 * time.Second}}
 }
 
 func (c *apimClient) pub(path string) string {
-	return fmt.Sprintf("https://%s:9443/api/am/publisher/v4%s", c.host, path)
+	return fmt.Sprintf("https://%s:%s/api/am/publisher/v4%s", c.host, c.port, path)
 }
 
 func (c *apimClient) doJSON(method, url string, body interface{}, out interface{}) error {
@@ -759,7 +763,7 @@ func (c *apimClient) registerClient(adminUser, adminPass string) (clientID, clie
 		"saasApp":    true,
 	}
 	b, _ := json.Marshal(payload)
-	req, _ := http.NewRequest("POST", fmt.Sprintf("https://%s:9443/client-registration/v0.17/register", c.host), bytes.NewReader(b))
+	req, _ := http.NewRequest("POST", fmt.Sprintf("https://%s:%s/client-registration/v0.17/register", c.host, c.port), bytes.NewReader(b))
 	req.SetBasicAuth(adminUser, adminPass)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.httpClient.Do(req)
@@ -785,7 +789,7 @@ func (c *apimClient) getToken(clientID, clientSecret, adminUser, adminPass strin
 	form := fmt.Sprintf(
 		"grant_type=password&username=%s&password=%s&scope=apim%%3Aapi_view+apim%%3Aapi_create+apim%%3Aapi_manage+apim%%3Aapi_publish+apim%%3Asubscribe+apim%%3Aapp_manage",
 		adminUser, adminPass)
-	req, _ := http.NewRequest("POST", fmt.Sprintf("https://%s:9443/oauth2/token", c.host), strings.NewReader(form))
+	req, _ := http.NewRequest("POST", fmt.Sprintf("https://%s:%s/oauth2/token", c.host, c.port), strings.NewReader(form))
 	req.SetBasicAuth(clientID, clientSecret)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := c.httpClient.Do(req)
@@ -919,7 +923,7 @@ func loadOrInitConfig(configPath string) (*properties, error) {
 	if cfg.Get("host", "") == "" || cfg.Get("adminUser", "") == "" {
 		return nil, fmt.Errorf(
 			"%s is missing required fields. Create it with at least:\n\n"+
-				"  host=your-wso2-host\n  adminUser=admin\n  adminPassword=yourpassword\n  environment=Default\n  vhost=your-wso2-host\n",
+				"  host=your-wso2-host\n  adminUser=admin\n  adminPassword=yourpassword\n  environment=Default\n  vhost=your-wso2-host\n  port=9443 (optional, defaults to 9443)\n",
 			configPath)
 	}
 	return cfg, nil
@@ -1014,7 +1018,7 @@ func cmdCreateAPIs(args []string) error {
 		return err
 	}
 
-	client := newAPIMClient(cfg.Get("host", ""))
+	client := newAPIMClient(cfg.Get("host", ""), cfg.Get("port", ""))
 	if err := ensureClient(cfg, *configFlag, client); err != nil {
 		return err
 	}
@@ -1218,7 +1222,7 @@ func cmdCreateProduct(args []string) error {
 		"apis":         apiRefs,
 	}
 
-	client := newAPIMClient(cfg.Get("host", ""))
+	client := newAPIMClient(cfg.Get("host", ""), cfg.Get("port", ""))
 	if err := ensureClient(cfg, *configFlag, client); err != nil {
 		return err
 	}
@@ -1276,7 +1280,7 @@ func cmdUpdateBackends(args []string) error {
 		return err
 	}
 
-	client := newAPIMClient(cfg.Get("host", ""))
+	client := newAPIMClient(cfg.Get("host", ""), cfg.Get("port", ""))
 	if err := ensureClient(cfg, *configFlag, client); err != nil {
 		return err
 	}
@@ -1402,6 +1406,9 @@ config.properties — full schema, with every section commented:
   adminPassword=yourpassword
   environment=Default
   vhost=your-wso2-host
+  # port=9443 is the default if omitted; set it only if your APIM server's HTTPS
+  # port is offset (e.g. deployment.toml [server] offset = 1 -> port=9444)
+  port=9443
 
   # --- Project settings (used by split, create-apis, create-product) ---
   projectDir=/path/to/YourProjectName__1.0
